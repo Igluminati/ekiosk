@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { CardActionArea, Typography, CardContent, Card } from '@mui/material';
+import { CardActionArea, Typography, CardContent, Card, Box } from '@mui/material';
 import { RootMenuBox, SideBox, MainMenuBox, StyledCard, StyledCardMedia } from './styles';
 import Link from 'next/link';
 import Fade from '@mui/material/Fade';
@@ -11,6 +11,8 @@ import Fade from '@mui/material/Fade';
  */
 export default function MenuScreen() {
   const [items, setItems] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -26,19 +28,22 @@ export default function MenuScreen() {
     fetchItems();
   }, []);
 
+  const handleItemClick = (item) => {
+    setSelectedItems([...selectedItems, item]);
+    setTotalPrice((prevTotal) => parseFloat((prevTotal + item.price).toFixed(2)));
+  }
+
   return (
     <Card>
-      <Link href="/" passHref>
-        <CardActionArea>
-          <Fade in={true} timeout={200}>
-            <RootMenuBox>
-              <SideBox>
-                {/* Side content */}
-              </SideBox>
-              <MainMenuBox>
-                {items.map(item => (
-                  <StyledCard key={item.id}>
-                    <CardActionArea>
+      <Fade in={true} timeout={200}>
+        <RootMenuBox>
+          <SideBox>
+            {/* Side content */}
+          </SideBox>
+          <MainMenuBox>
+            {items.map(item => (
+            <StyledCard key={item.id}>
+              <CardActionArea onClick={() => handleItemClick(item)}>
                       <StyledCardMedia
                         image={item.image}
                         title={item.name}
@@ -55,10 +60,21 @@ export default function MenuScreen() {
                   </StyledCard>
                 ))}
               </MainMenuBox>
+              <SideBox>
+                <Typography variant="h6" align="center">
+                  Selected Items
+                </Typography>
+                <ul>
+                  {selectedItems.map((item, index) => (
+                    <li key={index}>{item.name} - ${item.price}</li>
+                  ))}
+                </ul>
+                <Typography variant="h6" align="center">
+                  Total Price: ${totalPrice}
+                </Typography>
+              </SideBox>
             </RootMenuBox>
           </Fade>
-        </CardActionArea>
-      </Link>
     </Card>
   );
 }
