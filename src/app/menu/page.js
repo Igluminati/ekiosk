@@ -1,4 +1,5 @@
 import MenuScreen from '@/pages/MenuScreen';
+import { MenuProvider } from '../contexts/createContext';
 import RootLayout from '../layout';
 
 /**
@@ -9,7 +10,9 @@ import RootLayout from '../layout';
 export default function Menu() {
   return (
     <RootLayout>
-      <MenuScreen />
+      <MenuProvider>
+        <MenuScreen />
+      </MenuProvider>
     </RootLayout>
   );
 }
