@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { CardActionArea, Typography, CardContent, Card, Box } from '@mui/material';
+import { CardActionArea, Typography, CardContent, Card, Box, Button } from '@mui/material';
 import { RootMenuBox, SideBox, MainMenuBox, StyledCard, StyledCardMedia } from './styles';
 import Link from 'next/link';
 import Fade from '@mui/material/Fade';
@@ -29,19 +29,18 @@ export default function MenuScreen() {
   }, []);
 
   const handleItemClick = (item) => {
-    // Check if the item already exists in selectedItems
-    const existingItemIndex = selectedItems.findIndex((selectedItem) => selectedItem.id === item.id);
-    if (existingItemIndex !== -1) {
-      // If the item exists, update its count
-      const updatedItems = [...selectedItems];
-      updatedItems[existingItemIndex] = { ...updatedItems[existingItemIndex], count: updatedItems[existingItemIndex].count + 1 };
-      setSelectedItems(updatedItems);
-    } else {
-      // If the item doesn't exist, add it with count 1
-      setSelectedItems([...selectedItems, { ...item, count: 1 }]);
-    }
-    setTotalPrice((prevTotal) => parseFloat((prevTotal + item.price).toFixed(2)));
-  };
+    setSelectedItems(prevItems => {
+      const existingItem = prevItems.find(prevItem => prevItem.id === item.id);
+      if (existingItem) {
+        existingItem.quantity += 1;
+        return [...prevItems];
+      } else {
+        item.quantity = 1;
+        return [...prevItems, item];
+      }
+    });
+    setTotalPrice(prevTotal => parseFloat((prevTotal + item.price).toFixed(2)));
+  }
 
   return (
     <Card>
@@ -71,17 +70,24 @@ export default function MenuScreen() {
             ))}
           </MainMenuBox>
           <SideBox>
-            <Typography variant="h6" align="center">
-              Selected Items
-            </Typography>
-            <ul>
-              {selectedItems.map((item, index) => (
-                <li key={index}>{item.name} {item.count > 1 ? `x${item.count}` : ''} - ${item.price}</li>
-              ))}
-            </ul>
-            <Typography variant="h6" align="center">
-              Total Price: ${totalPrice}
-            </Typography>
+            <Box>
+              <Typography variant="h6" align="center">
+                Selected Items
+              </Typography>
+              <ul>
+                {selectedItems.map((item, index) => (
+                  <li key={index}>{item.name} {item.quantity > 1 && `x${item.quantity}`} - ${item.price}</li>
+                ))}
+              </ul>
+              <Typography variant="h6" align="center">
+                Total Price: ${totalPrice.toFixed(2)}
+              </Typography>
+              <Box mt={2}>
+                <Button variant="contained" color="primary">
+                  Go to Checkout
+                </Button>
+              </Box>
+            </Box>
           </SideBox>
         </RootMenuBox>
       </Fade>
