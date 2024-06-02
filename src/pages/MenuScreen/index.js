@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { Card, CardActionArea, Typography } from '@mui/material';
-import { RootMenuBox, SideBox, MainMenuBox } from './styles';
+import { CardActionArea, Typography, CardContent, Card } from '@mui/material';
+import { RootMenuBox, SideBox, MainMenuBox, StyledCard, StyledCardMedia } from './styles';
 import Link from 'next/link';
 import Fade from '@mui/material/Fade';
 
@@ -36,15 +36,24 @@ export default function MenuScreen() {
                 {/* Side content */}
               </SideBox>
               <MainMenuBox>
-                <Typography variant="h1">
-                <ul>
-                  {items.map(item => (
-                    <li key={item.id}>
-                      {item.name} - ${item.price} - ${item.image}
-                    </li>
-                  ))}
-                </ul>
-                </Typography>
+                {items.map(item => (
+                  <StyledCard key={item.id}>
+                    <CardActionArea>
+                      <StyledCardMedia
+                        image={item.image}
+                        title={item.name}
+                      />
+                      <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                          {item.name}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" component="p">
+                          ${item.price}
+                        </Typography>
+                      </CardContent>
+                    </CardActionArea>
+                  </StyledCard>
+                ))}
               </MainMenuBox>
             </RootMenuBox>
           </Fade>
