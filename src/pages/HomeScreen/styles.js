@@ -18,7 +18,6 @@ export const RootBox = styled(Box)(({ theme }) => ({
   height: '100vh',
   display: 'flex',
   flexDirection: 'column',
-  backgroundImage: `url(images/background-image.png)`,
   backgroundRepeat: "no-repeat",
   backgroundSize: "cover",
 }));
@@ -35,7 +34,7 @@ export const MainBox = styled(Box)(({ theme }) => ({
   overflow: 'auto',
   display: 'flex',
   flexDirection: 'column',
-  color: theme.palette.primary.contrastText,
+  color: theme.palette.primary.color,
 }));
 
 /**
