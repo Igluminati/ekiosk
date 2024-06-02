@@ -29,9 +29,19 @@ export default function MenuScreen() {
   }, []);
 
   const handleItemClick = (item) => {
-    setSelectedItems([...selectedItems, item]);
+    // Check if the item already exists in selectedItems
+    const existingItemIndex = selectedItems.findIndex((selectedItem) => selectedItem.id === item.id);
+    if (existingItemIndex !== -1) {
+      // If the item exists, update its count
+      const updatedItems = [...selectedItems];
+      updatedItems[existingItemIndex] = { ...updatedItems[existingItemIndex], count: updatedItems[existingItemIndex].count + 1 };
+      setSelectedItems(updatedItems);
+    } else {
+      // If the item doesn't exist, add it with count 1
+      setSelectedItems([...selectedItems, { ...item, count: 1 }]);
+    }
     setTotalPrice((prevTotal) => parseFloat((prevTotal + item.price).toFixed(2)));
-  }
+  };
 
   return (
     <Card>
@@ -42,39 +52,39 @@ export default function MenuScreen() {
           </SideBox>
           <MainMenuBox>
             {items.map(item => (
-            <StyledCard key={item.id}>
-              <CardActionArea onClick={() => handleItemClick(item)}>
-                      <StyledCardMedia
-                        image={item.image}
-                        title={item.name}
-                      />
-                      <CardContent>
-                        <Typography gutterBottom variant="h5" component="div">
-                          {item.name}
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary" component="p">
-                          ${item.price}
-                        </Typography>
-                      </CardContent>
-                    </CardActionArea>
-                  </StyledCard>
-                ))}
-              </MainMenuBox>
-              <SideBox>
-                <Typography variant="h6" align="center">
-                  Selected Items
-                </Typography>
-                <ul>
-                  {selectedItems.map((item, index) => (
-                    <li key={index}>{item.name} - ${item.price}</li>
-                  ))}
-                </ul>
-                <Typography variant="h6" align="center">
-                  Total Price: ${totalPrice}
-                </Typography>
-              </SideBox>
-            </RootMenuBox>
-          </Fade>
+              <StyledCard key={item.id}>
+                <CardActionArea onClick={() => handleItemClick(item)}>
+                  <StyledCardMedia
+                    image={item.image}
+                    title={item.name}
+                  />
+                  <CardContent>
+                    <Typography gutterBottom variant="h5" component="div">
+                      {item.name}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary" component="p">
+                      ${item.price}
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </StyledCard>
+            ))}
+          </MainMenuBox>
+          <SideBox>
+            <Typography variant="h6" align="center">
+              Selected Items
+            </Typography>
+            <ul>
+              {selectedItems.map((item, index) => (
+                <li key={index}>{item.name} {item.count > 1 ? `x${item.count}` : ''} - ${item.price}</li>
+              ))}
+            </ul>
+            <Typography variant="h6" align="center">
+              Total Price: ${totalPrice}
+            </Typography>
+          </SideBox>
+        </RootMenuBox>
+      </Fade>
     </Card>
   );
 }
