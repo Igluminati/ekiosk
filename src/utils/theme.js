@@ -24,12 +24,12 @@ const theme = createTheme({
   },
   palette: {
     primary: {
-      main: '#EEEEEE',
-      contrastText: '#FEE715B0',
+      main: '#212121', // Dark grey
+      contrastText: '#FFFFFF', // White
     },
     secondary: {
-      main: '#101820C0',
-      contrastText: '#ffffff',
+      main: '#F48FB1', // Light pink
+      contrastText: '#121212', // Black
     },
   },
 });
