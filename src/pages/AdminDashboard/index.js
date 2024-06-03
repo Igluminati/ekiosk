@@ -1,8 +1,8 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Card,
-  CardActionArea,
+  Paper,
+  Box,
   Typography,
   IconButton,
   Toolbar,
@@ -12,44 +12,60 @@ import {
   Grid,
 } from '@mui/material';
 import { AddCircleOutline, Menu } from '@mui/icons-material';
+import { styled } from '@mui/system';
+import { RootContainer, ItemBox, OrdersGrid, OrderBox } from './styles';
 
 /**
  * Functional component for the admin dashboard, focused on adding new items.
  * @returns {JSX.Element} JSX representation of the admin dashboard (add new item section).
  */
 export default function AdminDashboard() {
-  /**
-   * State object to hold information about the new item being added.
-   * @typedef {Object} NewItem
-   * @property {string} name - Name of the new item.
-   * @property {number} price - Price of the new item.
-   * @property {string} category - Category of the new item.
-   * @property {string} image - Image URL of the new item.
-   */
   const [newItem, setNewItem] = useState({ name: '', price: '', category: '', image: '' });
+  const [orders, setOrders] = useState([]);
 
-  /**
-   * Handles changes to the form fields for the new item.
-   * @param {React.ChangeEvent<HTMLInputElement>} event - The change event object.
-   * @returns {void}
-   */
+  useEffect(() => {
+    async function fetchOrders() {
+      try {
+        console.log('Fetching orders...'); // Debugging line
+        const response = await fetch('/api/orders');
+        console.log('Response status:', response.status); // Debugging line
+        if (!response.ok) {
+          throw new Error('Failed to fetch orders');
+        }
+        const data = await response.json();
+        console.log('Fetched orders data:', data); // Debugging line
+        setOrders(data);
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+      }
+    }
+
+    fetchOrders();
+  }, []);
+
   const handleNewItemChange = (event) => {
     setNewItem({ ...newItem, [event.target.name]: event.target.value });
   };
 
-  /**
-   * Handles the submission of the "Add New Item" form.
-   * (Currently a placeholder function, needs implementation to send a POST request)
-   * @param {React.FormEvent<HTMLFormElement>} event - The form submission event object.
-   * @returns {Promise<void>} A promise that resolves when the asynchronous operation is complete.
-   */
   const handleAddNewItem = async (event) => {
     event.preventDefault();
 
-    // Prepare item data to send (implementation omitted for brevity)
+    // Prepare item data to send (ensure price is a number)
+    const data = {
+      ...newItem,
+      price: parseFloat(newItem.price),
+    };
 
     try {
-      // Send POST request to add new item (implementation omitted for brevity)
+      const response = await fetch('/api/catalogue', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to add new item: ${response.statusText}`);
+      }
 
       console.log('New item added successfully!');
       setNewItem({ name: '', price: '', category: '', image: '' });
@@ -58,8 +74,17 @@ export default function AdminDashboard() {
     }
   };
 
+  /**
+   * Utility function to truncate card number and replace all but the last four digits with asterisks.
+   * @param {string} cardNumber - The card number to format.
+   * @returns {string} - The formatted card number.
+   */
+  const formatCardNumber = (cardNumber) => {
+    return cardNumber.slice(0, -4).replace(/\d/g, '*') + cardNumber.slice(-4);
+  };
+
   return (
-    <Card>
+    <RootContainer>
       <AppBar position="static">
         <Toolbar variant="dense">
           <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
@@ -117,6 +142,30 @@ export default function AdminDashboard() {
           </Button>
         </Grid>
       </Grid>
-    </Card>
+      
+      {/* Display order data */}
+      <Grid container spacing={2} sx={{ padding: 2 }}>
+        {orders.map((order) => (
+          <OrdersGrid item xs={12} ml={4} key={order.id}>
+            <OrderBox>
+              <Typography variant="h5">Order ID: {order.id}</Typography>
+              <Typography variant="body1">Card Number: {formatCardNumber(order.cardNumber)}</Typography>
+              <Typography variant="body1">Name: {order.name}</Typography>
+              <Typography variant="body1">Phone: {order.phone}</Typography>
+              <Typography variant="body1">Email: {order.email}</Typography>
+              <Typography variant="body1">Created At: {order.createdAt}</Typography>
+              <Typography variant="h6">Items:</Typography>
+              {order.items.map((item) => (
+                <ItemBox key={item.id}>
+                  <Typography variant="body2">
+                    {item.name} - Quantity: {item.quantity} - Price: {item.price}
+                  </Typography>
+                </ItemBox>
+              ))}
+            </OrderBox>
+          </OrdersGrid>
+        ))}
+      </Grid>
+    </RootContainer>
   );
 }
