@@ -40,7 +40,6 @@ export const MainMenuBox = styled(Box)(({ theme }) => ({
   alignItems: 'flex-start',
   textAlign: 'left',
   flex: 8.5,
-  overflow: 'auto',
   display: 'flex',
   flexDirection: 'row',
   flexWrap: 'wrap',
