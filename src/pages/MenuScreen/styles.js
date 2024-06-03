@@ -20,13 +20,13 @@ export const RootMenuBox = styled(Box)(({ theme }) => ({
 * @type {import('@mui/material').StyledComponent<typeof Box, {}, {}>}
 */
 export const SideBox = styled(Box)(({ theme }) => ({
-  justifyContent: 'center',
+  justifyContent: 'top',
   alignItems: 'top',
   textAlign: 'top',
   flex: 1.5,
   overflow: 'auto',
   display: 'flex',
-  flexDirection: 'row',
+  flexDirection: 'column',
   backgroundColor: theme.palette.secondary.main,
   color: theme.palette.secondary.contrastText,
 }));
@@ -56,6 +56,8 @@ export const StyledCard = styled(Card)(({ theme }) => ({
   width: '280px',
   display: 'flex',
   flexDirection: 'column',
+  justifyContent: "center",
+  marginTop: theme.spacing(2),
 }));
 
 /**
@@ -66,4 +68,22 @@ export const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
   height: '200px',
   backgroundSize: 'cover',
   backgroundPosition: 'center',
+}));
+
+/**
+* Category box styled component to create touchable, centered, and column-displayed boxes for categories.
+* @type {import('@mui/material').StyledComponent<typeof Box, {}, {}>}
+*/
+export const CategoryBox = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(1),
+  margin: theme.spacing(1),
+  backgroundColor: theme.palette.primary.light,
+  color: theme.palette.primary.contrastText,
+  cursor: 'pointer',
+  textAlign: 'center',
+  width: '75%',
+  borderRadius: theme.shape.borderRadius,
+  '&:hover': {
+    backgroundColor: theme.palette.primary.main,
+  },
 }));
