@@ -1,9 +1,8 @@
 'use client'
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // Import useRouter hook
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { CardActionArea, Typography, CardContent, Card, Box, Button } from '@mui/material';
-import { RootMenuBox, SideBox, MainMenuBox, StyledCard, StyledCardMedia } from './styles';
-import Link from 'next/link';
+import { RootMenuBox, SideBox, MainMenuBox, StyledCard, StyledCardMedia, CategoryBox } from './styles';
 import Fade from '@mui/material/Fade';
 
 /**
@@ -13,9 +12,14 @@ import Fade from '@mui/material/Fade';
 export default function MenuScreen() {
   const router = useRouter();
   const [items, setItems] = useState([]);
+  const [displayedItems, setDisplayedItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [categories, setCategories] = useState([]);
 
+  /**
+   * Fetches items from the catalogue API and sets them to the state.
+   */
   useEffect(() => {
     const fetchItems = async () => {
       try {
@@ -23,6 +27,11 @@ export default function MenuScreen() {
         const data = await response.json();
         console.log("Items set");
         setItems(data);
+        setDisplayedItems(data);
+
+        const uniqueCategories = ['All', ...new Set(data.map(item => item.category))];
+        setCategories(uniqueCategories);
+
       } catch (error) {
         console.error('Error fetching items:', error);
       }
@@ -31,23 +40,35 @@ export default function MenuScreen() {
     fetchItems();
   }, []);
 
-  const handleItemClick = (item) => {
-    setSelectedItems((prevItems) => {
-      const existingItem = prevItems.find((prevItem) => prevItem.id === item.id);
-      if (existingItem) {
-        console.log('Existing Item:', existingItem);
-        existingItem.quantity += 1;
-        console.log('Updated Items:', prevItems);
-        return [...prevItems];
-      } else {
-        const newItem = { ...item, quantity: 1 };
-        console.log('New Item:', newItem);
-        return [...prevItems, newItem];
-      }
-    });
+  /**
+   * Handles the click event for an item, updating the selected items and total price.
+   *
+   * @param {Object} item - The item that was clicked.
+   * @param {number} item.id - The unique ID of the item.
+   * @param {string} item.name - The name of the item.
+   * @param {string} item.image - The image URL of the item.
+   * @param {number} item.price - The price of the item.
+   */
+  const handleItemClick = useCallback((item) => {
+    const existingItemIndex = selectedItems.findIndex((prevItem) => prevItem.id === item.id);
+    if (existingItemIndex !== -1) {
+      // If the item already exists in the selectedItems array, increment its quantity by 1
+      const updatedItems = [...selectedItems];
+      updatedItems[existingItemIndex].quantity += 1;
+      setSelectedItems(updatedItems);
+    } else {
+      // If the item doesn't exist, add it with a quantity of 1
+      const newItem = { ...item, quantity: 1 };
+      setSelectedItems([...selectedItems, newItem]);
+    }
     setTotalPrice((prevTotal) => parseFloat((prevTotal + item.price).toFixed(2)));
-  };
+  }, [selectedItems]);
+  
+  
 
+  /**
+   * Handles the checkout process, navigating to the checkout page with selected items and total price.
+   */
   const handleCheckout = () => {
     if (selectedItems.length === 0) {
       alert('Please select items before going to checkout.');
@@ -58,15 +79,41 @@ export default function MenuScreen() {
     router.push(`/checkout?items=${stringifiedItems}&totalPrice=${totalPrice}`);
   };
 
+  /**
+   * Handles the category click event, updating the displayed items based on the selected category.
+   *
+   * @param {string} category - The category that was clicked.
+   */
+  const handleCategoryClick = (category) => {
+    if (category === 'All') {
+      setDisplayedItems(items);
+    } else {
+      const filteredItems = items.filter(item => item.category === category);
+      setDisplayedItems(filteredItems);
+    }
+  };
+
   return (
     <Card>
       <Fade in={true} timeout={200}>
         <RootMenuBox>
           <SideBox>
-            {/* Side content */}
+            <Box>
+              <Typography variant="h6" align="center">
+                Categories
+              </Typography>
+              <Box display="flex" flexDirection="column" alignItems="center" mt={2}>
+                {categories.map((category, index) => (
+                  <CategoryBox key={index} onClick={() => handleCategoryClick(category)}>
+                    {category}
+                  </CategoryBox>
+                ))}
+              </Box>
+            </Box>
           </SideBox>
+
           <MainMenuBox>
-            {items.map((item) => (
+            {displayedItems.map((item) => (
               <StyledCard key={item.id}>
                 <CardActionArea onClick={() => handleItemClick(item)}>
                   <StyledCardMedia image={item.image} title={item.name} />
@@ -82,6 +129,8 @@ export default function MenuScreen() {
               </StyledCard>
             ))}
           </MainMenuBox>
+
+          {/* Side Box which displays current items in cart */}
           <SideBox>
             <Box>
               <Typography variant="h6" align="center">
@@ -97,9 +146,11 @@ export default function MenuScreen() {
               <Typography variant="h6" align="center">
                 Total Price: ${totalPrice.toFixed(2)}
               </Typography>
-              <Button variant="contained" color="primary" onClick={handleCheckout}>
-                Go to Checkout
-              </Button>
+              <Box display="flex" justifyContent="center" mt={2}>
+                <Button variant="contained" color="primary" onClick={handleCheckout}>
+                  Go to Checkout
+                </Button>
+              </Box>
             </Box>
           </SideBox>
         </RootMenuBox>
