@@ -84,6 +84,15 @@ export default function AdminDashboard() {
     return cardNumber.slice(0, -4).replace(/\d/g, '*') + cardNumber.slice(-4);
   };
 
+  /**
+   * Calculate the total price of all items within an order.
+   * @param {Array} items - The items within the order.
+   * @returns {number} - The total price.
+   */
+  const calculateTotalPrice = (items) => {
+    return items.reduce((total, item) => total + (item.price * item.quantity), 0);
+  };
+
   return (
     <StyledAdmin.RootContainer>
       <AppBar position="static">
@@ -146,26 +155,27 @@ export default function AdminDashboard() {
       
       {/* Display order data */}
       <Grid container spacing={2} sx={{ padding: 2 }}>
-        {orders.map((order) => (
-          <StyledAdmin.OrdersGrid item xs={12} ml={4} key={order.id}>
-            <StyledAdmin.OrderBox>
-              <Typography variant="h5">Order ID: {order.id}</Typography>
-              <Typography variant="body1">Card Number: {formatCardNumber(order.cardNumber)}</Typography>
-              <Typography variant="body1">Name: {order.name}</Typography>
-              <Typography variant="body1">Phone: {order.phone}</Typography>
-              <Typography variant="body1">Email: {order.email}</Typography>
-              <Typography variant="body1">Created At: {order.createdAt}</Typography>
-              <Typography variant="h6">Items:</Typography>
-              {order.items.map((item) => (
-                <StyledAdmin.ItemBox key={item.id}>
-                  <Typography variant="body2">
-                    {item.name} - Quantity: {item.quantity} - Price: {item.price}
-                  </Typography>
-                </StyledAdmin.ItemBox>
-              ))}
-            </StyledAdmin.OrderBox>
-          </StyledAdmin.OrdersGrid>
-        ))}
+      {orders.map((order) => (
+        <StyledAdmin.OrdersGrid item xs={12} ml={4} key={order.id}>
+          <StyledAdmin.OrderBox>
+            <Typography variant="h5">Order ID: {order.id}</Typography>
+            <Typography variant="body1">Card Number: {formatCardNumber(order.cardNumber)}</Typography>
+            <Typography variant="body1">Name: {order.name}</Typography>
+            <Typography variant="body1">Phone: {order.phone}</Typography>
+            <Typography variant="body1">Email: {order.email}</Typography>
+            <Typography variant="body1">Created At: {order.createdAt}</Typography>
+            <Typography variant="h6">Items:</Typography>
+            {order.items.map((item) => (
+              <StyledAdmin.ItemBox key={item.id}>
+                <Typography variant="body2">
+                  {item.name} - Quantity: {item.quantity} - Price: ${item.price * item.quantity}
+                </Typography>
+              </StyledAdmin.ItemBox>
+            ))}
+            <Typography variant="h6">Total Price: ${calculateTotalPrice(order.items).toFixed(2)}</Typography>
+          </StyledAdmin.OrderBox>
+        </StyledAdmin.OrdersGrid>
+      ))}
       </Grid>
     </StyledAdmin.RootContainer>
   );
