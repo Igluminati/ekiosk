@@ -94,67 +94,61 @@ export default function MenuScreen() {
   };
 
   return (
-    <Card>
-      <Fade in={true} timeout={200}>
-        <RootMenuBox>
-          <SideBox>
-            <Box>
-              <Typography variant="h6" align="center">
-                Categories
-              </Typography>
-              <Box display="flex" flexDirection="column" alignItems="center" mt={2}>
-                {categories.map((category, index) => (
-                  <CategoryBox key={index} onClick={() => handleCategoryClick(category)}>
-                    {category}
-                  </CategoryBox>
-                ))}
-              </Box>
+    <Fade in={true} timeout={200}>
+      <RootMenuBox>
+        <SideBox>
+          <Box>
+            <Typography variant="h6" align="center">
+              Categories
+            </Typography>
+            <Box display="flex" flexDirection="column" alignItems="center" mt="2%">
+              {categories.map((category, index) => (
+                <CategoryBox key={index} onClick={() => handleCategoryClick(category)}>
+                  {category}
+                </CategoryBox>
+              ))}
             </Box>
-          </SideBox>
-
-          <MainMenuBox>
-            {displayedItems.map((item) => (
-              <StyledCard key={item.id}>
-                <CardActionArea onClick={() => handleItemClick(item)}>
-                  <StyledCardMedia image={item.image} title={item.name} />
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      {item.name}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary" component="p">
-                      ${item.price}
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-              </StyledCard>
-            ))}
-          </MainMenuBox>
-
-          {/* Side Box which displays current items in cart */}
-          <SideBox>
-            <Box>
-              <Typography variant="h6" align="center">
-                Selected Items
-              </Typography>
-              <ul>
-                {selectedItems.map((item, index) => (
-                  <li key={index}>
-                    {item.name} {item.quantity > 1 && `x${item.quantity}`} - ${item.price}
-                  </li>
-                ))}
-              </ul>
-              <Typography variant="h6" align="center">
-                Total Price: ${totalPrice.toFixed(2)}
-              </Typography>
-              <Box display="flex" justifyContent="center" mt={2}>
-                <Button variant="contained" color="primary" onClick={handleCheckout}>
-                  Go to Checkout
-                </Button>
-              </Box>
+          </Box>
+          <Box>
+            <Typography variant="h6" align="center">
+              Selected Items
+            </Typography>
+            <ul style={{ listStyleType: 'none', padding: 0 }}>
+              {selectedItems.map((item, index) => (
+                <li key={index} style={{ marginBottom: '1%' }}>
+                  {item.name} {item.quantity > 1 && `x${item.quantity}`} - ${item.price}
+                </li>
+              ))}
+            </ul>
+            <Typography variant="h6" align="center">
+              Total Price: ${totalPrice.toFixed(2)}
+            </Typography>
+            <Box display="flex" justifyContent="center" mt="2%" >
+              <Button variant="contained" color="primary" onClick={handleCheckout} disabled={selectedItems.length === 0}>
+                Go to Checkout
+              </Button>
             </Box>
-          </SideBox>
-        </RootMenuBox>
-      </Fade>
-    </Card>
+          </Box>
+        </SideBox>
+
+        <MainMenuBox>
+          {displayedItems.map((item) => (
+            <StyledCard key={item.id}>
+              <CardActionArea onClick={() => handleItemClick(item)}>
+                <StyledCardMedia image={item.image} title={item.name} />
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="div">
+                    {item.name}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary" component="p">
+                    ${item.price}
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </StyledCard>
+          ))}
+        </MainMenuBox>
+      </RootMenuBox>
+    </Fade>
   );
 }
