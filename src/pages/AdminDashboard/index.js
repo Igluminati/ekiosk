@@ -13,7 +13,8 @@ import {
 } from '@mui/material';
 import { AddCircleOutline, Menu } from '@mui/icons-material';
 import { styled } from '@mui/system';
-import { RootContainer, ItemBox, OrdersGrid, OrderBox } from './styles';
+import StyledAdmin from '@/components/styles/StyledAdmin';
+
 
 /**
  * Functional component for the admin dashboard, focused on adding new items.
@@ -84,7 +85,7 @@ export default function AdminDashboard() {
   };
 
   return (
-    <RootContainer>
+    <StyledAdmin.RootContainer>
       <AppBar position="static">
         <Toolbar variant="dense">
           <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
@@ -146,8 +147,8 @@ export default function AdminDashboard() {
       {/* Display order data */}
       <Grid container spacing={2} sx={{ padding: 2 }}>
         {orders.map((order) => (
-          <OrdersGrid item xs={12} ml={4} key={order.id}>
-            <OrderBox>
+          <StyledAdmin.OrdersGrid item xs={12} ml={4} key={order.id}>
+            <StyledAdmin.OrderBox>
               <Typography variant="h5">Order ID: {order.id}</Typography>
               <Typography variant="body1">Card Number: {formatCardNumber(order.cardNumber)}</Typography>
               <Typography variant="body1">Name: {order.name}</Typography>
@@ -156,16 +157,16 @@ export default function AdminDashboard() {
               <Typography variant="body1">Created At: {order.createdAt}</Typography>
               <Typography variant="h6">Items:</Typography>
               {order.items.map((item) => (
-                <ItemBox key={item.id}>
+                <StyledAdmin.ItemBox key={item.id}>
                   <Typography variant="body2">
                     {item.name} - Quantity: {item.quantity} - Price: {item.price}
                   </Typography>
-                </ItemBox>
+                </StyledAdmin.ItemBox>
               ))}
-            </OrderBox>
-          </OrdersGrid>
+            </StyledAdmin.OrderBox>
+          </StyledAdmin.OrdersGrid>
         ))}
       </Grid>
-    </RootContainer>
+    </StyledAdmin.RootContainer>
   );
 }

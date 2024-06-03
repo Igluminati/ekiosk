@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardActionArea, Typography } from '@mui/material';
-import { RootBox, MainBox, SecondBox } from './styles';
+import { RootBox, MainBox, SecondBox } from '@/components/styles/StyledHomeScreen';
 import Link from 'next/link';
 import Fade from '@mui/material/Fade';
 

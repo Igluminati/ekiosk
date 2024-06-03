@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { CardActionArea, Typography, CardContent, Card, Box, Button } from '@mui/material';
-import { RootMenuBox, SideBox, MainMenuBox, StyledCard, StyledCardMedia, CategoryBox } from './styles';
+import { RootMenuBox, SideBox, MainMenuBox, StyledCard, StyledCardMedia, CategoryBox } from '@/components/styles/StyledMenuScreen';
 import Fade from '@mui/material/Fade';
 
 /**

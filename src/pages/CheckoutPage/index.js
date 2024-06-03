@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Box, CardContent, Typography, TextField, Button, Grid, Card } from '@mui/material';
-import { StyledCard, StyledCardMedia, RootContainer } from './styles';
+import { StyledCard, StyledCardMedia, RootContainer } from '@/components/styles/StyledCheckoutPage';
 
 /**
  * The CheckoutPage component handles the checkout process for items.
