@@ -1,6 +1,6 @@
 'use client';
 import { styled } from '@mui/material/styles';
-import { Box, Grid, Typography, TextField, Button } from '@mui/material';
+import { Box, Grid, Typography, TextField, Button, Card, Paper } from '@mui/material';
 
 /**
  * Root container styled component.
@@ -56,13 +56,30 @@ export const OrderListGrid = styled(Grid)(({ theme }) => ({
   marginTop: theme.spacing(2),
 }));
 
-/**
- * Order ListItem styled component.
- * @type {import('@mui/material').StyledComponent<typeof Box, {}, {}>}
- */
-export const OrderListItemBox = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(1),
-  marginBottom: theme.spacing(1),
+export const OrdersGrid = styled(Box)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+}));
+
+export const StyledCard = styled(Card)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  padding: theme.spacing(2),
   border: `1px solid ${theme.palette.divider}`,
   borderRadius: theme.shape.borderRadius,
+}));
+
+/**
+* OrderBox styled component.
+* @type {import('@mui/material').StyledComponent<typeof Box, {}, {}>}
+*/
+export const OrderBox = styled(Box)(({ theme }) => ({
+  width: '280px',
+  display: 'flex',
+  flexDirection: 'column',
+}));
+
+export const ItemBox = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(1),
+  marginTop: theme.spacing(1),
 }));
