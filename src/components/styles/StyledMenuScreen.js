@@ -20,13 +20,8 @@ export const RootMenuBox = styled(Box)(({ theme }) => ({
 * @type {import('@mui/material').StyledComponent<typeof Box, {}, {}>}
 */
 export const SideBox = styled(Box)(({ theme }) => ({
-  justifyContent: 'top',
-  alignItems: 'top',
-  textAlign: 'top',
-  flex: 1.5,
-  overflow: 'auto',
-  display: 'flex',
-  flexDirection: 'column',
+  flex: '1',
+  overflowY: 'auto',
   backgroundColor: theme.palette.secondary.main,
   color: theme.palette.secondary.contrastText,
 }));
@@ -39,12 +34,13 @@ export const MainMenuBox = styled(Box)(({ theme }) => ({
   justifyContent: 'flex-start',
   alignItems: 'flex-start',
   textAlign: 'left',
-  flex: 8.5,
+  flex: 2.5,
   display: 'flex',
   flexDirection: 'row',
   flexWrap: 'wrap',
+  overflow: 'auto',
   gap: theme.spacing(2),
-  padding: theme.spacing(2),
+  padding: theme.spacing(1),
   color: theme.palette.primary.contrastText,
 }));
 
@@ -54,8 +50,6 @@ export const MainMenuBox = styled(Box)(({ theme }) => ({
 */
 export const StyledCard = styled(Card)(({ theme }) => ({
   width: '280px',
-  display: 'flex',
-  flexDirection: 'column',
   justifyContent: "center",
   marginTop: theme.spacing(2),
 }));
