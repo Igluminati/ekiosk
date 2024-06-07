@@ -21,7 +21,7 @@ export default function CheckoutPage() {
         cvc: '',
         name: '',
         phone: '',
-        email: '',
+        email: ''
     });
 
     /**
