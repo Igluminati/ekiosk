@@ -34,24 +34,33 @@ const StyledAdmin = {
     marginTop: theme.spacing(2),
   })),
   OrdersGrid: styled(Box)(({ theme }) => ({
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(1),
   })),
-  StyledCard: styled(Card)(({ theme }) => ({
+  OrderBox: styled(Card)(({ theme }) => ({
+    width: '289px',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between',
-    padding: theme.spacing(2),
-    border: `1px solid ${theme.palette.divider}`,
-    borderRadius: theme.shape.borderRadius,
-  })),
-  OrderBox: styled(Box)(({ theme }) => ({
-    width: '280px',
-    display: 'flex',
-    flexDirection: 'column',
-  })),
-  ItemBox: styled(Paper)(({ theme }) => ({
+    border: '2px solid grey',
     padding: theme.spacing(1),
-    marginTop: theme.spacing(1),
+    maxHeight: '360px',
+    alignItems: 'left'
+  })),
+  ItemList: styled(Box)(({ theme }) => ({
+    maxHeight: '90px',
+    overflow: 'auto' 
+  })),
+  ButtonBox: styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'row',
+  })),
+  Modal: styled(Paper)(({ theme }) => ({
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    boxShadow: 24,
+    padding: theme.spacing(2)
   })),
 };
 
