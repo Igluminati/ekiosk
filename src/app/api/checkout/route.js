@@ -29,6 +29,8 @@ export async function POST(req) {
         name,
         phone,
         email,
+        trackingNo: '',
+        fulfilled: false,
         items: {
           createMany: {
             data: items.map((item) => ({
@@ -51,7 +53,6 @@ export async function POST(req) {
     console.error('Error creating order:', error);
     return NextResponse.json({ message: 'Failed to create order.', error }, { status: 400 });
   } finally {
-    // Disconnect from Prisma after the request is handled (optional)
     await prisma.$disconnect();
   }
 }
