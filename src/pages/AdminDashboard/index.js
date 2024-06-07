@@ -1,8 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import {
-  Paper,
-  Box,
   Typography,
   IconButton,
   Toolbar,
@@ -10,11 +8,12 @@ import {
   TextField,
   Button,
   Grid,
+  Box,
+  CardActionArea
 } from '@mui/material';
 import { AddCircleOutline, Menu } from '@mui/icons-material';
-import { styled } from '@mui/system';
 import StyledAdmin from '@/components/styles/StyledAdmin';
-
+import OrderDetailsModal from './orderDetailsModal';
 
 /**
  * Functional component for the admin dashboard, focused on adding new items.
@@ -93,6 +92,35 @@ export default function AdminDashboard() {
     return items.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
+  /**
+   * State hook to manage the open state of the modal.
+   * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
+   */
+  const [open, setOpen] = useState(false);
+
+  /**
+   * State hook to manage the currently selected order.
+   * @type {[Object|null, React.Dispatch<React.SetStateAction<Object|null>>]}
+   */
+  const [selectedOrder, setSelectedOrder] = useState(null);
+
+  /**
+   * Handles opening the modal by setting the selected order and open state.
+   * @param {Object} order - The order to be displayed in the modal.
+   */
+  const handleOpen = (order) => {
+    setSelectedOrder(order);
+    setOpen(true);
+  };
+
+  /**
+   * Handles closing the modal by resetting the open state and selected order.
+   */
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedOrder(null);
+  };
+
   return (
     <StyledAdmin.RootContainer>
       <AppBar position="static">
@@ -147,36 +175,55 @@ export default function AdminDashboard() {
           />
         </Grid>
         <Grid item xs={12}>
-          <Button variant="contained" color="primary" onClick={handleAddNewItem} endIcon={<AddCircleOutline />}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleAddNewItem}
+            endIcon={<AddCircleOutline />}
+          >
             Add New Item
           </Button>
         </Grid>
       </Grid>
       
-      {/* Display order data */}
       <Grid container spacing={2} sx={{ padding: 2 }}>
-      {orders.map((order) => (
-        <StyledAdmin.OrdersGrid item xs={12} ml={4} key={order.id}>
-          <StyledAdmin.OrderBox>
-            <Typography variant="h5">Order ID: {order.id}</Typography>
-            <Typography variant="body1">Card Number: {formatCardNumber(order.cardNumber)}</Typography>
-            <Typography variant="body1">Name: {order.name}</Typography>
-            <Typography variant="body1">Phone: {order.phone}</Typography>
-            <Typography variant="body1">Email: {order.email}</Typography>
-            <Typography variant="body1">Created At: {order.createdAt}</Typography>
-            <Typography variant="h6">Items:</Typography>
-            {order.items.map((item) => (
-              <StyledAdmin.ItemBox key={item.id}>
-                <Typography variant="body2">
-                  {item.name} - Quantity: {item.quantity} - Price: ${item.price * item.quantity}
+        {orders.map((order) => (
+          <StyledAdmin.OrdersGrid item xs={12} ml={4} key={order.id}>
+          <CardActionArea onClick={() => handleOpen(order)} disabled={order.fulfilled}>
+              <StyledAdmin.OrderBox>
+                <Typography variant="h5">
+                  Fulfilled: {order.fulfilled ? 'Yes' : 'No'}
                 </Typography>
-              </StyledAdmin.ItemBox>
-            ))}
-            <Typography variant="h6">Total Price: ${calculateTotalPrice(order.items).toFixed(2)}</Typography>
-          </StyledAdmin.OrderBox>
-        </StyledAdmin.OrdersGrid>
-      ))}
+                <Typography variant="body1">
+                  Tracking Number: {order.trackingNo ? order.trackingNo : ''}
+                </Typography>
+                <Typography variant="h5">Order ID: {order.id}</Typography>
+                <Typography variant="body1">Card Number: {formatCardNumber(order.cardNumber)}</Typography>
+                <Typography variant="body1">Name: {order.name}</Typography>
+                <Typography variant="body1">Phone: {order.phone}</Typography>
+                <Typography variant="body1">Email: {order.email}</Typography>
+                <Typography variant="body1">Created At: {order.createdAt}</Typography>
+                <Typography variant="h6">Items:</Typography>
+                <StyledAdmin.ItemList>
+                  {order.items.map((item) => (
+                    <Box key={item.id}>
+                      <Typography variant="body2">
+                        {item.name} - Quantity: {item.quantity} - Price: ${item.price * item.quantity}
+                      </Typography>
+                    </Box>
+                  ))}
+                </StyledAdmin.ItemList>
+                <Typography variant="h6">Total Price: ${calculateTotalPrice(order.items).toFixed(2)}</Typography>
+                <StyledAdmin.ButtonBox>
+                  <Box color='green'>{order.fulfilled ? 'Fulfilled' : 'Tap to fulfill'}</Box>
+                </StyledAdmin.ButtonBox>
+              </StyledAdmin.OrderBox>
+            </CardActionArea>
+          </StyledAdmin.OrdersGrid>
+        ))}
       </Grid>
+      
+      <OrderDetailsModal open={open} handleClose={handleClose} order={selectedOrder} />
     </StyledAdmin.RootContainer>
   );
 }
