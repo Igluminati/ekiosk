@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Typography,
   IconButton,
@@ -14,6 +14,7 @@ import {
 import { AddCircleOutline, Menu } from '@mui/icons-material';
 import StyledAdmin from '@/components/styles/StyledAdmin';
 import OrderDetailsModal from './orderDetailsModal';
+import useFetchOrders from '@/hooks/useFetchOrders';
 
 /**
  * Functional component for the admin dashboard, focused on adding new items.
@@ -21,28 +22,8 @@ import OrderDetailsModal from './orderDetailsModal';
  */
 export default function AdminDashboard() {
   const [newItem, setNewItem] = useState({ name: '', price: '', category: '', image: '' });
-  const [orders, setOrders] = useState([]);
-
-  useEffect(() => {
-    async function fetchOrders() {
-      try {
-        console.log('Fetching orders...'); // Debugging line
-        const response = await fetch('/api/orders');
-        console.log('Response status:', response.status); // Debugging line
-        if (!response.ok) {
-          throw new Error('Failed to fetch orders');
-        }
-        const data = await response.json();
-        console.log('Fetched orders data:', data); // Debugging line
-        setOrders(data);
-      } catch (error) {
-        console.error('Error fetching orders:', error);
-      }
-    }
-
-    fetchOrders();
-  }, []);
-
+  const orders = useFetchOrders();
+  
   const handleNewItemChange = (event) => {
     setNewItem({ ...newItem, [event.target.name]: event.target.value });
   };
@@ -189,7 +170,7 @@ export default function AdminDashboard() {
       <Grid container spacing={2} sx={{ padding: 2 }}>
         {orders.map((order) => (
           <StyledAdmin.OrdersGrid item xs={12} ml={4} key={order.id}>
-          <CardActionArea onClick={() => handleOpen(order)} disabled={order.fulfilled}>
+            <CardActionArea onClick={() => handleOpen(order)} disabled={order.fulfilled}>
               <StyledAdmin.OrderBox>
                 <Typography variant="h5">
                   Fulfilled: {order.fulfilled ? 'Yes' : 'No'}
