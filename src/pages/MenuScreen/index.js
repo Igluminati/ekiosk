@@ -1,9 +1,10 @@
 'use client'
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { CardActionArea, Typography, CardContent, Card, Box, Button } from '@mui/material';
 import { RootMenuBox, SideBox, MainMenuBox, StyledCard, StyledCardMedia, CategoryBox } from '@/components/styles/StyledMenuScreen';
 import Fade from '@mui/material/Fade';
+import useFetchItems from '@/hooks/useFetchItems';
 
 /**
  * Functional component for the menu screen.
@@ -11,34 +12,10 @@ import Fade from '@mui/material/Fade';
  */
 export default function MenuScreen() {
   const router = useRouter();
-  const [items, setItems] = useState([]);
+  const { items, categories } = useFetchItems();
   const [displayedItems, setDisplayedItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [categories, setCategories] = useState([]);
-
-  /**
-   * Fetches items from the catalogue API and sets them to the state.
-   */
-  useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        const response = await fetch('/api/catalogue');
-        const data = await response.json();
-        console.log("Items set");
-        setItems(data);
-        setDisplayedItems(data);
-
-        const uniqueCategories = ['All', ...new Set(data.map(item => item.category))];
-        setCategories(uniqueCategories);
-
-      } catch (error) {
-        console.error('Error fetching items:', error);
-      }
-    };
-
-    fetchItems();
-  }, []);
 
   /**
    * Handles the click event for an item, updating the selected items and total price.
@@ -64,8 +41,6 @@ export default function MenuScreen() {
     setTotalPrice((prevTotal) => parseFloat((prevTotal + item.price).toFixed(2)));
   }, [selectedItems]);
   
-  
-
   /**
    * Handles the checkout process, navigating to the checkout page with selected items and total price.
    */
