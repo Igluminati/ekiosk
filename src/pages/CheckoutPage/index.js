@@ -1,8 +1,8 @@
 'use client'
-import React, { useEffect, useState } from 'react';
-import { usePathname, useSearchParams } from 'next/navigation';
+import React, { useState } from 'react';
 import { Box, CardContent, Typography, TextField, Button, Grid, Card } from '@mui/material';
 import { StyledCard, StyledCardMedia, RootContainer } from '@/components/styles/StyledCheckoutPage';
+import useProcessItems from '@/hooks/useProcessItems';
 
 /**
  * The CheckoutPage component handles the checkout process for items.
@@ -12,9 +12,7 @@ import { StyledCard, StyledCardMedia, RootContainer } from '@/components/styles/
  * @returns {JSX.Element} The rendered checkout page component.
  */
 export default function CheckoutPage() {
-    const pathname = usePathname();
-    const searchParams = useSearchParams();
-    const [processedItems, setProcessedItems] = useState([]);
+    const processedItems = useProcessItems();
     const [orderData, setOrderData] = useState({
         cardNumber: '',
         expiryDate: '',
@@ -23,35 +21,6 @@ export default function CheckoutPage() {
         phone: '',
         email: ''
     });
-
-    /**
-     * Effect hook to process items and total price from URL search parameters.
-     */
-    useEffect(() => {
-        const url = `${pathname}?${searchParams}`;
-        console.log(url);
-
-        const itemsString = searchParams.get('items');
-        const totalPriceString = searchParams.get('totalPrice');
-
-        if (itemsString && totalPriceString) {
-            try {
-                const selectedItems = JSON.parse(decodeURIComponent(itemsString));
-
-                const processedItemsData = selectedItems.map((item) => ({
-                    name: item.name,
-                    quantity: item.quantity,
-                    image: item.image,
-                    price: item.price,
-                }));
-
-                setProcessedItems(processedItemsData);
-                console.log('Processed Items:', processedItemsData);
-            } catch (error) {
-                console.error('Error parsing items:', error);
-            }
-        }
-    }, [pathname, searchParams]);
 
     /**
      * Handles changes in the order data form fields.
@@ -86,7 +55,7 @@ export default function CheckoutPage() {
             }
 
             console.log('Order placed successfully!');
-            setOrderData({cardNumber: '', expiryDate: '', cvc: '', name: '', phone: '', email: '',});
+            setOrderData({ cardNumber: '', expiryDate: '', cvc: '', name: '', phone: '', email: '' });
         } catch (error) {
             console.error('Error checking out:', error);
         }
