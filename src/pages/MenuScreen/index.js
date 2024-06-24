@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { CardActionArea, Typography, CardContent, Card, Box, Button } from '@mui/material';
 import { RootMenuBox, SideBox, MainMenuBox, StyledCard, StyledCardMedia, CategoryBox } from '@/components/styles/StyledMenuScreen';
@@ -13,9 +13,14 @@ import useFetchItems from '@/hooks/useFetchItems';
 export default function MenuScreen() {
   const router = useRouter();
   const { items, categories } = useFetchItems();
-  const [displayedItems, setDisplayedItems] = useState([]);
+  const [displayedItems, setDisplayedItems] = useState(items);
   const [selectedItems, setSelectedItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState('All');
+
+  useEffect(() => {
+    setDisplayedItems(items);
+  }, [items]);
 
   /**
    * Handles the click event for an item, updating the selected items and total price.
@@ -60,6 +65,7 @@ export default function MenuScreen() {
    * @param {string} category - The category that was clicked.
    */
   const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
     if (category === 'All') {
       setDisplayedItems(items);
     } else {
@@ -77,8 +83,12 @@ export default function MenuScreen() {
               Categories
             </Typography>
             <Box display="flex" flexDirection="column" alignItems="center" mt="2%">
-              {categories.map((category, index) => (
-                <CategoryBox key={index} onClick={() => handleCategoryClick(category)}>
+              {[...categories].map((category, index) => (
+                <CategoryBox 
+                  key={index} 
+                  onClick={() => handleCategoryClick(category)}
+                  selected={selectedCategory === category}
+                >
                   {category}
                 </CategoryBox>
               ))}
@@ -91,12 +101,12 @@ export default function MenuScreen() {
             <ul style={{ listStyleType: 'none', padding: 0 }}>
               {selectedItems.map((item, index) => (
                 <li key={index} style={{ marginBottom: '1%' }}>
-                  {item.name} {item.quantity > 1 && `x${item.quantity}`} - ${item.price}
+                  {item.name} {item.quantity > 1 && `x${item.quantity}`} - {item.price.toString().replace('.', ',')} TL
                 </li>
               ))}
             </ul>
             <Typography variant="h6" align="center">
-              Total Price: ${totalPrice.toFixed(2)}
+              Total Price: {totalPrice.toFixed(2).toString().replace('.', ',')} TL
             </Typography>
             <Box display="flex" justifyContent="center" mt="2%" >
               <Button variant="contained" color="primary" onClick={handleCheckout} disabled={selectedItems.length === 0}>
@@ -116,7 +126,7 @@ export default function MenuScreen() {
                     {item.name}
                   </Typography>
                   <Typography variant="body2" color="textSecondary" component="p">
-                    ${item.price}
+                    {item.price.toString().replace('.', ',')} TL
                   </Typography>
                 </CardContent>
               </CardActionArea>
