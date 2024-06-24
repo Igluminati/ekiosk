@@ -49,7 +49,7 @@ export const MainMenuBox = styled(Box)(({ theme }) => ({
 * @type {import('@mui/material').StyledComponent<typeof Card, {}, {}>}
 */
 export const StyledCard = styled(Card)(({ theme }) => ({
-  width: '280px',
+  width: '400px',
   justifyContent: "center",
   marginTop: theme.spacing(2),
 }));
@@ -59,7 +59,7 @@ export const StyledCard = styled(Card)(({ theme }) => ({
 * @type {import('@mui/material').StyledComponent<typeof CardMedia, {}, {}>}
 */
 export const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
-  height: '200px',
+  height: '420px',
   backgroundSize: 'cover',
   backgroundPosition: 'center',
 }));
