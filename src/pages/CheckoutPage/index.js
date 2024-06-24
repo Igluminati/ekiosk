@@ -1,8 +1,10 @@
 'use client'
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Box, CardContent, Typography, TextField, Button, Grid, Card } from '@mui/material';
 import { StyledCard, StyledCardMedia, RootContainer } from '@/components/styles/StyledCheckoutPage';
 import useProcessItems from '@/hooks/useProcessItems';
+import QrCode2Icon from '@mui/icons-material/QrCode2';
 
 /**
  * The CheckoutPage component handles the checkout process for items.
@@ -12,6 +14,7 @@ import useProcessItems from '@/hooks/useProcessItems';
  * @returns {JSX.Element} The rendered checkout page component.
  */
 export default function CheckoutPage() {
+    const router = useRouter();
     const processedItems = useProcessItems();
     const [orderData, setOrderData] = useState({
         cardNumber: '',
@@ -31,18 +34,18 @@ export default function CheckoutPage() {
         setOrderData({ ...orderData, [event.target.name]: event.target.value });
     };
 
+    const data = {
+            ...orderData,
+            items: processedItems,
+            totalPrice: processedItems.reduce((acc, item) => acc + item.price, 0),
+        };
+
     /**
      * Handles the checkout process by sending order data to the server.
      *
      * @returns {Promise<void>} A promise that resolves when the checkout is complete.
      */
     const handleCheckout = async () => {
-        const data = {
-            ...orderData,
-            items: processedItems,
-            totalPrice: processedItems.reduce((acc, item) => acc + item.price, 0),
-        };
-
         try {
             const response = await fetch('/api/checkout', {
                 method: 'POST',
@@ -56,6 +59,7 @@ export default function CheckoutPage() {
 
             console.log('Order placed successfully!');
             setOrderData({ cardNumber: '', expiryDate: '', cvc: '', name: '', phone: '', email: '' });
+            router.push(`/`);
         } catch (error) {
             console.error('Error checking out:', error);
         }
@@ -75,12 +79,15 @@ export default function CheckoutPage() {
                                 Quantity: {item.quantity}
                             </Typography>
                             <Typography variant="body2" color="textSecondary" component="p">
-                                Price: ${item.price}
+                                Price: {item.price.toString().replace('.', ',')} TL
                             </Typography>
                         </CardContent>
                     </StyledCard>
                 ))}
             </Box>
+            <Typography variant="h6" align="center">
+              Total Price: {data.totalPrice.toFixed(2).toString().replace('.', ',')} TL
+            </Typography>
             <Box display="flex" justifyContent="center" alignItems="center">
                 <Card>
                     <CardContent>
@@ -142,11 +149,18 @@ export default function CheckoutPage() {
                                 />
                             </Grid>
                         </Grid>
+                        
                     </CardContent>
+                    <Box display="flex" justifyContent="center" alignItems="center" mt={2} mb={4}>
+                        <Button variant="contained" color="primary" onClick={handleCheckout}>Checkout</Button>
+                    </Box>       
                 </Card>
             </Box>
-            <Box display="flex" justifyContent="center" alignItems="center" mt={2}>
-                <Button variant="contained" color="primary" onClick={handleCheckout}>Checkout</Button>
+            <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" mt={2}>
+                <Typography variant="h6" align="center">
+                    Or
+                </Typography>
+                <Button variant="contained" color="primary"><QrCode2Icon/> HappyPay</Button>
             </Box>
         </RootContainer>
     );
